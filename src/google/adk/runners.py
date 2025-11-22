@@ -388,7 +388,10 @@ class Runner:
     ) -> AsyncGenerator[Event, None]:
       with tracer.start_as_current_span('invocation'):
         session = await self.session_service.get_session(
-            app_name=self.app_name, user_id=user_id, session_id=session_id
+            app_name=self.app_name,
+            user_id=user_id,
+            session_id=session_id,
+            config=run_config.get_session_config,
         )
         if not session:
           message = self._format_session_not_found_message(session_id)
@@ -819,7 +822,10 @@ class Runner:
       )
     if not session:
       session = await self.session_service.get_session(
-          app_name=self.app_name, user_id=user_id, session_id=session_id
+          app_name=self.app_name,
+          user_id=user_id,
+          session_id=session_id,
+          config=run_config.get_session_config,
       )
       if not session:
         raise ValueError(f'Session not found: {session_id}')
@@ -1031,7 +1037,10 @@ class Runner:
         Please use run_async() with proper configuration.
     """
     session = await self.session_service.get_session(
-        app_name=self.app_name, user_id=user_id, session_id=session_id
+        app_name=self.app_name,
+        user_id=user_id,
+        session_id=session_id,
+        config=run_config.get_session_config if run_config else None,
     )
     if not session:
       session = await self.session_service.create_session(
